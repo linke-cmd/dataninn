@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>大潭山莊 Da Tan Mountain INN — 墾丁南灣直訂</title>
+<title>大潭山莊 · Web4 去中心化旅宿智能體</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Serif+TC:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Serif+TC:wght@300;400&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
 <style>
 :root {
   --sand: #f5ede0;
@@ -17,6 +18,9 @@
   --cream: #faf6f0;
   --text: #2d2016;
   --muted: #8a7560;
+  --neon: #00f0a0;
+  --web4: #7c5cfc;
+  --web4-dim: rgba(124,92,252,.15);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -44,36 +48,48 @@ body {
 .hero-bg {
   position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse at 70% 40%, rgba(201,148,58,.18) 0%, transparent 55%),
-    radial-gradient(ellipse at 20% 80%, rgba(74,92,62,.25) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 30%, rgba(124,92,252,.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 80%, rgba(0,240,160,.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(201,148,58,.06) 0%, transparent 60%),
     linear-gradient(160deg, #0e0b08 0%, #1a1410 50%, #12180e 100%);
 }
 
-/* Decorative botanical silhouette */
-.hero-deco {
-  position: absolute;
-  right: -40px; bottom: 0;
-  width: 480px; height: 600px;
-  opacity: .12;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 600'%3E%3Cellipse cx='200' cy='580' rx='6' ry='580' fill='%23c9943a'/%3E%3Cellipse cx='200' cy='200' rx='120' ry='80' fill='%23c9943a' transform='rotate(-30 200 200)'/%3E%3Cellipse cx='200' cy='250' rx='100' ry='70' fill='%23c9943a' transform='rotate(25 200 250)'/%3E%3Cellipse cx='200' cy='320' rx='140' ry='85' fill='%23c9943a' transform='rotate(-15 200 320)'/%3E%3C/svg%3E") center/contain no-repeat;
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(124,92,252,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,92,252,.04) 1px, transparent 1px);
+  background-size: 60px 60px;
 }
 
 .hero-content {
   position: relative; z-index: 2;
   padding: 60px 6vw 80px;
-  max-width: 900px;
+  max-width: 1000px;
 }
 
-.lang-tag {
-  display: inline-block;
-  font-family: 'DM Sans', sans-serif;
+.web4-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 11px; font-weight: 500;
-  letter-spacing: .2em; text-transform: uppercase;
-  color: var(--gold);
-  border: 1px solid rgba(201,148,58,.4);
+  letter-spacing: .15em;
+  color: var(--neon);
+  background: rgba(0,240,160,.08);
+  border: 1px solid rgba(0,240,160,.25);
   padding: 6px 14px; border-radius: 20px;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
   animation: fadeUp .8s ease both;
+}
+.web4-tag::before {
+  content: '';
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--neon);
+  box-shadow: 0 0 8px var(--neon);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .4; }
 }
 
 .hero h1 {
@@ -87,7 +103,10 @@ body {
 
 .hero h1 em {
   font-style: italic;
-  color: var(--gold);
+  background: linear-gradient(135deg, var(--gold), var(--web4));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .hero-sub {
@@ -97,7 +116,7 @@ body {
   color: rgba(245,237,224,.65);
   margin-top: 20px;
   line-height: 1.8;
-  max-width: 520px;
+  max-width: 580px;
   animation: fadeUp .8s .3s ease both;
 }
 
@@ -118,6 +137,18 @@ body {
   border: none; cursor: pointer;
 }
 .btn-primary:hover { background: #e0a840; transform: translateY(-2px); }
+
+.btn-web4 {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--web4);
+  color: #fff;
+  font-weight: 500; font-size: .95rem;
+  padding: 16px 32px; border-radius: 4px;
+  text-decoration: none;
+  transition: background .2s, transform .2s;
+  border: none; cursor: pointer;
+}
+.btn-web4:hover { background: #6a4ae0; transform: translateY(-2px); }
 
 .btn-outline {
   display: inline-flex; align-items: center; gap: 8px;
@@ -146,17 +177,40 @@ body {
   padding: 7px 14px; border-radius: 20px;
 }
 .badge strong { color: var(--gold); }
+.badge-web4 { border-color: var(--web4); color: var(--web4); }
 
-/* ── DIRECT BOOKING BANNER ── */
-.direct-banner {
-  background: var(--moss);
-  color: #fff;
-  text-align: center;
-  padding: 18px 20px;
-  font-size: .9rem;
+/* ── WALLET CONNECTOR ── */
+.wallet-bar {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex; justify-content: flex-end; align-items: center;
+  gap: 12px; padding: 12px 5vw;
+  background: rgba(26,20,16,.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(245,237,224,.06);
 }
-.direct-banner strong { color: #c8e6b0; }
-.direct-banner a { color: #c8e6b0; font-weight: 500; }
+.wallet-bar .net-tag {
+  font-size: .7rem; color: var(--neon);
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(0,240,160,.1);
+  padding: 4px 10px; border-radius: 12px;
+}
+.wallet-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--web4);
+  color: #fff;
+  font-size: .78rem; font-weight: 500;
+  padding: 8px 18px; border-radius: 20px;
+  border: none; cursor: pointer;
+  transition: background .2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.wallet-btn:hover { background: #6a4ae0; }
+.wallet-btn.connected { background: var(--moss); }
+.wallet-addr {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem; color: var(--neon);
+}
 
 /* ── SECTION COMMON ── */
 section { padding: 100px 6vw; }
@@ -166,6 +220,7 @@ section { padding: 100px 6vw; }
   letter-spacing: .25em; text-transform: uppercase;
   color: var(--gold); margin-bottom: 14px;
 }
+.section-label.web4 { color: var(--web4); }
 
 .section-title {
   font-family: 'Playfair Display', serif;
@@ -174,70 +229,34 @@ section { padding: 100px 6vw; }
   color: var(--deep);
 }
 
-/* ── ABOUT ── */
-.about { background: var(--cream); }
+/* ── WEB4 CONCEPT ── */
+.web4-concept { background: var(--deep); }
+.web4-concept .section-title { color: var(--sand); }
 
-.about-grid {
+.concept-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px; align-items: center;
-  margin-top: 60px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-top: 52px;
 }
 
-.about-text p {
-  font-family: 'Noto Serif TC', serif;
-  font-size: 1rem; font-weight: 300;
-  line-height: 2; color: var(--text);
-  margin-bottom: 16px;
-}
-
-.about-features {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 16px; margin-top: 32px;
-}
-.feat {
-  display: flex; align-items: center; gap: 10px;
-  font-size: .88rem; color: var(--muted);
-}
-.feat-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--gold); flex-shrink: 0;
-}
-
-.about-visual {
-  position: relative;
-}
-.about-card {
-  background: var(--deep);
+.concept-card {
+  background: rgba(245,237,224,.04);
+  border: 1px solid rgba(245,237,224,.08);
   border-radius: 8px;
-  overflow: hidden;
-  aspect-ratio: 4/5;
-  display: flex; flex-direction: column; justify-content: flex-end;
-  padding: 32px;
+  padding: 32px 24px;
+  transition: transform .3s, border-color .3s;
 }
-.about-card-bg {
-  position: absolute; inset: 0;
-  background: linear-gradient(160deg, #1a2d16 0%, #2a1a0a 100%);
-  opacity: .9;
+.concept-card:hover { transform: translateY(-4px); border-color: var(--web4); }
+.concept-icon { font-size: 2rem; margin-bottom: 16px; }
+.concept-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .85rem; font-weight: 500;
+  color: var(--neon); margin-bottom: 10px;
 }
-.about-card-text {
-  position: relative; z-index: 1;
-  font-family: 'Playfair Display', serif;
-  font-size: 1.4rem; color: var(--sand);
-  font-style: italic; line-height: 1.5;
-}
-.about-card-sub {
-  font-family: 'DM Sans', sans-serif;
-  font-size: .78rem; color: var(--gold);
-  letter-spacing: .15em; text-transform: uppercase;
-  margin-top: 12px; position: relative; z-index: 1;
-}
-.about-accent {
-  position: absolute;
-  top: -24px; right: -24px;
-  width: 100px; height: 100px;
-  border: 2px solid var(--gold);
-  border-radius: 50%; opacity: .3;
+.concept-desc {
+  font-size: .85rem; line-height: 1.7;
+  color: rgba(245,237,224,.55);
 }
 
 /* ── ROOMS ── */
@@ -294,6 +313,10 @@ section { padding: 100px 6vw; }
   background: rgba(201,148,58,.1); color: var(--earth);
   border: 1px solid rgba(201,148,58,.2);
 }
+.tag-web4 {
+  background: rgba(124,92,252,.1); color: var(--web4);
+  border-color: rgba(124,92,252,.2);
+}
 
 .room-price {
   display: flex; align-items: baseline; gap: 6px;
@@ -305,75 +328,245 @@ section { padding: 100px 6vw; }
   font-size: 1.6rem; color: var(--deep);
 }
 .price-unit { font-size: .8rem; color: var(--muted); }
+.price-eth {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8rem; color: var(--web4);
+  margin-left: 8px;
+}
 .price-save {
   margin-left: auto;
   font-size: .75rem; font-weight: 500;
   color: var(--moss); background: rgba(74,92,62,.1);
   padding: 3px 8px; border-radius: 20px;
 }
-
-/* ── BOOKING FORM ── */
-.booking { background: var(--deep); }
-.booking .section-title { color: var(--sand); }
-.booking .section-label { color: var(--gold); }
-
-.booking-note {
-  font-size: .88rem; color: rgba(245,237,224,.5);
-  margin-top: 10px; margin-bottom: 56px;
+.room-crypto {
+  margin-top: 12px;
+  display: flex; gap: 8px;
 }
-.booking-note strong { color: var(--gold); }
+.btn-crypto {
+  font-size: .78rem; padding: 8px 16px; border-radius: 4px;
+  background: var(--web4-dim); color: var(--web4);
+  border: 1px solid rgba(124,92,252,.25);
+  cursor: pointer; transition: background .2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-crypto:hover { background: rgba(124,92,252,.25); }
 
-.form-grid {
+/* ── AI AGENT ── */
+.ai-agent { background: var(--cream); }
+
+.ai-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-.form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
-.form-full { grid-column: 1 / -1; }
-
-.field { display: flex; flex-direction: column; gap: 8px; }
-
-label {
-  font-size: .75rem; font-weight: 500;
-  letter-spacing: .12em; text-transform: uppercase;
-  color: rgba(245,237,224,.5);
+  gap: 48px;
+  margin-top: 52px;
+  align-items: start;
 }
 
-input, select, textarea {
+.ai-chat {
+  background: var(--deep);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(245,237,224,.1);
+}
+.ai-chat-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 16px 20px;
+  background: rgba(245,237,224,.04);
+  border-bottom: 1px solid rgba(245,237,224,.08);
+}
+.ai-status {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--neon);
+  box-shadow: 0 0 6px var(--neon);
+}
+.ai-chat-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8rem; color: var(--sand);
+}
+.ai-chat-msgs {
+  padding: 20px;
+  height: 320px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.ai-msg {
+  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: .85rem; line-height: 1.6;
+}
+.ai-msg.bot {
+  align-self: flex-start;
+  background: rgba(124,92,252,.12);
+  border: 1px solid rgba(124,92,252,.15);
+  color: var(--sand);
+}
+.ai-msg.user {
+  align-self: flex-end;
+  background: rgba(201,148,58,.12);
+  border: 1px solid rgba(201,148,58,.15);
+  color: var(--sand);
+}
+.ai-chat-input {
+  display: flex; gap: 0;
+  border-top: 1px solid rgba(245,237,224,.08);
+}
+.ai-chat-input input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 16px 20px;
+  color: var(--sand);
+  font-family: 'DM Sans', sans-serif;
+  font-size: .88rem;
+  outline: none;
+}
+.ai-chat-input input::placeholder { color: rgba(245,237,224,.25); }
+.ai-chat-input button {
+  background: var(--web4);
+  color: #fff;
+  border: none;
+  padding: 0 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .2s;
+}
+.ai-chat-input button:hover { background: #6a4ae0; }
+
+.ai-info { display: flex; flex-direction: column; gap: 20px; }
+.ai-info-card {
+  background: var(--sand);
+  border-radius: 8px; padding: 24px;
+  border-left: 3px solid var(--web4);
+}
+.ai-info-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8rem; color: var(--web4);
+  margin-bottom: 8px;
+}
+.ai-info-text {
+  font-size: .88rem; line-height: 1.7;
+  color: var(--muted);
+}
+
+/* ── BOOKING (Smart Contract) ── */
+.booking { background: var(--deep); }
+.booking .section-title { color: var(--sand); }
+.booking .section-label { color: var(--web4); }
+
+.booking-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  margin-top: 52px;
+}
+
+.booking-info { display: flex; flex-direction: column; gap: 20px; }
+
+.booking-step {
+  display: flex; gap: 16px;
+  padding: 20px;
+  background: rgba(245,237,224,.04);
+  border-radius: 8px;
+  border: 1px solid rgba(245,237,224,.08);
+}
+.step-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--web4); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8rem; flex-shrink: 0;
+}
+.step-content { }
+.step-title {
+  font-size: .9rem; font-weight: 500; color: var(--sand);
+  margin-bottom: 4px;
+}
+.step-desc {
+  font-size: .82rem; color: rgba(245,237,224,.45);
+  line-height: 1.5;
+}
+
+.booking-card {
+  background: rgba(245,237,224,.04);
+  border: 1px solid rgba(245,237,224,.1);
+  border-radius: 12px;
+  padding: 32px;
+}
+.booking-card h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .85rem; color: var(--neon);
+  margin-bottom: 20px;
+}
+.sc-field { margin-bottom: 16px; }
+.sc-field label {
+  display: block;
+  font-size: .72rem; text-transform: uppercase;
+  letter-spacing: .1em; color: rgba(245,237,224,.4);
+  margin-bottom: 6px;
+}
+.sc-field select, .sc-field input {
+  width: 100%;
   background: rgba(245,237,224,.06);
   border: 1px solid rgba(245,237,224,.12);
   border-radius: 4px;
   color: var(--sand);
   font-family: 'DM Sans', sans-serif;
-  font-size: .95rem;
-  padding: 14px 16px;
-  transition: border-color .2s;
+  font-size: .9rem;
+  padding: 12px 14px;
   outline: none;
 }
-input:focus, select:focus, textarea:focus {
-  border-color: var(--gold);
+.sc-field select:focus, .sc-field input:focus {
+  border-color: var(--web4);
 }
-input::placeholder, textarea::placeholder { color: rgba(245,237,224,.25); }
-select option { background: var(--deep); color: var(--sand); }
-textarea { resize: vertical; min-height: 100px; }
+.sc-field select option { background: var(--deep); color: var(--sand); }
 
-.form-divider {
-  grid-column: 1/-1;
-  height: 1px; background: rgba(245,237,224,.08);
-  margin: 8px 0;
+.sc-summary {
+  background: rgba(124,92,252,.08);
+  border-radius: 6px;
+  padding: 16px;
+  margin: 16px 0;
+  font-size: .85rem;
+  line-height: 1.8;
+  color: rgba(245,237,224,.7);
+}
+.sc-summary strong { color: var(--neon); }
+
+/* ── NFT MEMBERSHIP ── */
+.nft-section { background: var(--sand); }
+
+.nft-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 48px;
 }
 
-.submit-row {
-  grid-column: 1/-1;
-  display: flex; align-items: center; gap: 24px;
-  margin-top: 8px;
+.nft-card {
+  background: var(--cream);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(124,92,252,.15);
+  transition: transform .3s;
 }
-
-.guarantee {
-  font-size: .8rem; color: rgba(245,237,224,.35);
+.nft-card:hover { transform: translateY(-4px); }
+.nft-art {
+  height: 160px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3rem;
+  background: linear-gradient(135deg, #1a0a2e 0%, #2d1a4a 100%);
+}
+.nft-info { padding: 20px; }
+.nft-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .85rem; color: var(--web4);
+  margin-bottom: 4px;
+}
+.nft-desc {
+  font-size: .8rem; color: var(--muted);
   line-height: 1.5;
 }
-.guarantee strong { color: var(--gold); }
 
 /* ── REVIEWS ── */
 .reviews { background: var(--cream); }
@@ -451,6 +644,12 @@ footer {
   font-size: 1.6rem; color: var(--sand);
 }
 .footer-brand span { color: var(--gold); }
+.footer-brand .web4-mark {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .7rem; color: var(--web4);
+  opacity: .6;
+  margin-left: 4px;
+}
 .footer-info { font-size: .82rem; line-height: 2; }
 .footer-info a { color: var(--gold); text-decoration: none; }
 .footer-copy { font-size: .75rem; color: rgba(245,237,224,.25); }
@@ -474,82 +673,88 @@ footer {
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   section { padding: 72px 5vw; }
-  .about-grid, .location-grid, .form-grid.three { grid-template-columns: 1fr; }
-  .form-grid { grid-template-columns: 1fr; }
-  .hero-badges { display: none; }
+  .about-grid, .location-grid, .ai-layout, .booking-layout { grid-template-columns: 1fr; }
+  .hero-badges, .wallet-bar { display: none; }
   footer { flex-direction: column; }
-  .submit-row { flex-direction: column; align-items: flex-start; }
   .hero-content { padding: 40px 5vw 60px; }
 }
 </style>
 </head>
 <body>
 
+<!-- WALLET BAR -->
+<div class="wallet-bar">
+  <span class="net-tag" id="networkTag">● 預覽模式</span>
+  <span class="wallet-addr" id="walletAddr"></span>
+  <button class="wallet-btn" id="walletBtn">⬡ 連接錢包 Connect Wallet</button>
+</div>
+
 <!-- HERO -->
 <section class="hero">
   <div class="hero-bg"></div>
-  <div class="hero-deco"></div>
+  <div class="hero-grid"></div>
 
   <div class="hero-badges">
+    <div class="badge badge-web4">⬡ Web4 智能體</div>
     <div class="badge">166 評價 · Booking.com</div>
     <div class="badge">🐾 寵物友善</div>
-    <div class="badge">🏊 室內泳池</div>
-    <div class="badge"><strong>直訂省 20%</strong></div>
+    <div class="badge"><strong>智能合約訂房</strong></div>
   </div>
 
   <div class="hero-content">
-    <div class="lang-tag">墾丁南灣 · Nanwan, Kenting</div>
+    <div class="web4-tag">WEB4 · 去中心化旅宿智能體</div>
     <h1>大潭山莊<br><em>Da Tan Mountain INN</em></h1>
     <p class="hero-sub">
-      南灣海岸旁的山居民宿，免費早餐、室內泳池、寵物友善。<br>
-      Hilltop retreat by South Bay — breakfast, pool &amp; pet-friendly.
+      南灣海岸旁的山居民宿，由 <strong style="color:var(--web4)">Web4 AI 智能體</strong> 驅動。<br>
+      傳統溫度 x 去中心化技術 — 智能合約訂房、加密支付、DAO 治理。<br>
+      <span style="color:rgba(245,237,224,.4);font-size:.85rem;">Hilltop retreat by South Bay — powered by Web4 decentralized AI agent.</span>
     </p>
     <div class="hero-cta">
-      <a href="#booking" class="btn-primary">直訂享優惠 · Book Direct</a>
+      <a href="#booking" class="btn-web4">⬡ 智能合約訂房 · Book on-chain</a>
+      <a href="#ai" class="btn-outline">🤖 問 AI 智能體 · Ask AI</a>
       <a href="#rooms" class="btn-outline">查看房型 · Rooms</a>
     </div>
   </div>
 </section>
 
-<!-- DIRECT BOOKING BANNER -->
-<div class="direct-banner">
-  🎯 官網直訂比 Airbnb / Booking.com <strong>便宜 20%</strong>，且資金即時到帳。
-  有問題請 LINE：<a href="https://line.me/R/ti/p/0983571139">@0983571139</a>
-</div>
+<!-- WEB4 CONCEPT -->
+<section class="web4-concept">
+  <div class="section-label web4">⬡ Web4 底層邏輯 · The Protocol</div>
+  <h2 class="section-title reveal">去中心化旅宿智能體</h2>
+  <p style="color:rgba(245,237,224,.45);margin-top:16px;font-size:.9rem;max-width:600px;">
+    大潭山莊不只是民宿 — 它是第一個運行在 Web4 協議上的<br>去中心化住宿智能體（Decentralized Accommodation Agent）。
+  </p>
 
-<!-- ABOUT -->
-<section class="about">
-  <div class="section-label">關於我們 · About</div>
-  <div class="about-grid">
-    <div class="about-text reveal">
-      <h2 class="section-title">藏在山坡的<br>南灣秘境</h2>
-      <p style="margin-top: 28px;">
-        大潭山莊坐落於恆春南灣，距南灣海灘僅 2 公里，
-        提供安靜的山坡住宿體驗。老闆娘熱情招呼，免費早餐每日供應。
-      </p>
-      <p>
-        Da Tan Mountain INN is nestled on a quiet hillside in Nanwan,
-        2km from South Bay beach. Free breakfast daily, warm hospitality,
-        and a peaceful escape from the crowds.
-      </p>
-      <div class="about-features">
-        <div class="feat"><div class="feat-dot"></div>免費早餐 Free breakfast</div>
-        <div class="feat"><div class="feat-dot"></div>室內泳池 Indoor pool</div>
-        <div class="feat"><div class="feat-dot"></div>寵物友善 Pet-friendly</div>
-        <div class="feat"><div class="feat-dot"></div>免費 WiFi Free WiFi</div>
-        <div class="feat"><div class="feat-dot"></div>停車方便 Free parking</div>
-        <div class="feat"><div class="feat-dot"></div>機車租借 Scooter rental</div>
-        <div class="feat"><div class="feat-dot"></div>花園戶外 Garden</div>
-        <div class="feat"><div class="feat-dot"></div>機場接送 Airport transfer</div>
-      </div>
+  <div class="concept-grid">
+    <div class="concept-card reveal">
+      <div class="concept-icon">🤖</div>
+      <div class="concept-title">AI 訂房智能體</div>
+      <div class="concept-desc">自然語言對話即可完成查房、訂房、修改訂單。AI Agent 自動排程、鏈上簽約。</div>
     </div>
-    <div class="about-visual reveal">
-      <div class="about-card">
-        <div class="about-card-bg"></div>
-        <div class="about-card-text">"CP值超高，老闆娘熱情招呼，冷氣很涼，泳池很棒。"</div>
-        <div class="about-card-sub">— 真實住客評語 · Verified Guest Review</div>
-      </div>
-      <div class="about-accent"></div>
+    <div class="concept-card reveal">
+      <div class="concept-icon">⬡</div>
+      <div class="concept-title">智能合約訂房</div>
+      <div class="concept-desc">每一筆訂單皆為鏈上智能合約，無需第三方平台，資金即時清算、不可篡改。</div>
+    </div>
+    <div class="concept-card reveal">
+      <div class="concept-icon">🏛️</div>
+      <div class="concept-title">DAO 社群治理</div>
+      <div class="concept-desc">$DATAN 代幣持有者可參與定價、規則修改、收益分配等社群決策。</div>
+    </div>
+    <div class="concept-card reveal">
+      <div class="concept-icon">🖼️</div>
+      <div class="concept-title">NFT 會員身份</div>
+      <div class="concept-desc">住宿 NFT = 會員憑證，享有折扣、權益投票、住房歷史上鏈。</div>
+    </div>
+    <div class="concept-card reveal">
+      <div class="concept-icon">🔗</div>
+      <div class="concept-title">跨鏈互操作</div>
+      <div class="concept-desc">支援 Ethereum、Polygon、Arbitrum。未來相容任何 Web4 生態協議。</div>
+    </div>
+    <div class="concept-card reveal">
+      <div class="concept-icon">🌐</div>
+      <div class="concept-title">無伺服器架構</div>
+      <div class="concept-desc">前端 IPFS 部署、後端智能合約 + The Graph 索引。真正的去中心化。</div>
     </div>
   </div>
 </section>
@@ -567,17 +772,21 @@ footer {
       <div class="room-info">
         <div class="room-name">標準家庭房</div>
         <div class="room-name-en">Standard Family Room · 4 People</div>
-        <p class="room-desc">適合家庭入住，四人房，空調、電視、私人衛浴，園景陽台。Ideal for families, with A/C, flat-screen TV, en-suite bath &amp; garden view.</p>
+        <p class="room-desc">適合家庭入住，四人房，空調、電視、私人衛浴，園景陽台。</p>
         <div class="room-tags">
           <span class="tag">4人</span>
           <span class="tag">私人衛浴</span>
           <span class="tag">園景</span>
-          <span class="tag">冰箱</span>
+          <span class="tag-web4 tag">⬡ 可加密支付</span>
         </div>
         <div class="room-price">
           <div class="price-num">NT$1,780</div>
           <div class="price-unit">/ 晚起</div>
+          <span class="price-eth">≈ 0.028 ETH</span>
           <div class="price-save">直訂省 20%</div>
+        </div>
+        <div class="room-crypto">
+          <button class="btn-crypto" onclick="bookWithCrypto('Family Room', '0.028')">⬡ 用加密貨幣預訂</button>
         </div>
       </div>
     </div>
@@ -589,17 +798,21 @@ footer {
       <div class="room-info">
         <div class="room-name">雙人房 — 附私人衛浴</div>
         <div class="room-name-en">Double Room · Private Bathroom</div>
-        <p class="room-desc">情侶或商務旅客首選。舒適雙人床、強力冷氣、書桌。Perfect for couples. Comfortable double bed, powerful A/C &amp; work desk.</p>
+        <p class="room-desc">情侶或商務旅客首選。舒適雙人床、強力冷氣、書桌。</p>
         <div class="room-tags">
           <span class="tag">2人</span>
           <span class="tag">私人衛浴</span>
           <span class="tag">書桌</span>
-          <span class="tag">冰箱</span>
+          <span class="tag-web4 tag">⬡ 可加密支付</span>
         </div>
         <div class="room-price">
           <div class="price-num">NT$1,180</div>
           <div class="price-unit">/ 晚起</div>
+          <span class="price-eth">≈ 0.018 ETH</span>
           <div class="price-save">直訂省 20%</div>
+        </div>
+        <div class="room-crypto">
+          <button class="btn-crypto" onclick="bookWithCrypto('Double Room', '0.018')">⬡ 用加密貨幣預訂</button>
         </div>
       </div>
     </div>
@@ -611,132 +824,196 @@ footer {
       <div class="room-info">
         <div class="room-name">山景套房</div>
         <div class="room-name-en">Mountain View Suite</div>
-        <p class="room-desc">最寬敞的房型，獨立陽台可遠眺山景，含客廳區，適合長住。Spacious suite with private balcony, mountain views &amp; sitting area.</p>
+        <p class="room-desc">最寬敞的房型，獨立陽台可遠眺山景，含客廳區，適合長住。</p>
         <div class="room-tags">
           <span class="tag">2-3人</span>
           <span class="tag">獨立陽台</span>
           <span class="tag">山景</span>
-          <span class="tag">客廳區</span>
+          <span class="tag-web4 tag">⬡ 可加密支付</span>
         </div>
         <div class="room-price">
           <div class="price-num">NT$2,280</div>
           <div class="price-unit">/ 晚起</div>
+          <span class="price-eth">≈ 0.036 ETH</span>
           <div class="price-save">直訂省 20%</div>
+        </div>
+        <div class="room-crypto">
+          <button class="btn-crypto" onclick="bookWithCrypto('Mountain Suite', '0.036')">⬡ 用加密貨幣預訂</button>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- BOOKING FORM -->
+<!-- AI AGENT -->
+<section class="ai-agent" id="ai">
+  <div class="section-label web4">🤖 AI 智能體 · AI Agent</div>
+  <h2 class="section-title reveal">透過 AI 對話完成訂房</h2>
+
+  <div class="ai-layout">
+    <div class="ai-chat reveal">
+      <div class="ai-chat-header">
+        <span class="ai-status"></span>
+        <span class="ai-chat-title">Da Tan AI Agent · 大潭智能體</span>
+      </div>
+      <div class="ai-chat-msgs" id="chatMsgs">
+        <div class="ai-msg bot">你好！我是大潭山莊的 Web4 AI 智能體。我可以幫你查房型、報價、直接完成鏈上訂房。有什麼可以幫助你的？</div>
+      </div>
+      <div class="ai-chat-input">
+        <input type="text" id="chatInput" placeholder="輸入訊息... e.g. 家庭房多少錢？" onkeydown="if(event.key==='Enter')sendChat()">
+        <button onclick="sendChat()">發送</button>
+      </div>
+    </div>
+
+    <div class="ai-info reveal">
+      <div class="ai-info-card">
+        <div class="ai-info-title">你可以問我：</div>
+        <div class="ai-info-text">
+          • 「雙人房多少錢？」<br>
+          • 「我想訂 6/1-6/3 的家庭房」<br>
+          • 「有寵物友善的房間嗎？」<br>
+          • 「用 ETH 付款有折扣嗎？」<br>
+          • 「離墾丁大街多遠？」
+        </div>
+      </div>
+      <div class="ai-info-card">
+        <div class="ai-info-title">⚡ 鏈上狀態</div>
+        <div class="ai-info-text" id="chainStatus">
+          智能合約：<span style="color:var(--neon)">已部署</span><br>
+          AI 模型：GPT-4o · 專属微調<br>
+          DAO 投票：進行中 #004
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING (Smart Contract) -->
 <section class="booking" id="booking">
-  <div class="section-label">直接訂房 · Direct Booking</div>
-  <h2 class="section-title">不經平台，直接聯繫</h2>
-  <p class="booking-note">填寫後我們將於 <strong>2 小時內</strong> 回覆確認，並提供信用卡付款連結。省下平台手續費，直接給您更好的價格。</p>
+  <div class="section-label web4">⬡ 智能合約訂房 · On-chain Booking</div>
+  <h2 class="section-title">直接上鏈，無需第三方</h2>
 
-  <form id="bookingForm">
-    <div class="form-grid">
-      <div class="field">
-        <label>姓名 Name *</label>
-        <input type="text" placeholder="您的姓名 Your name" required>
+  <div class="booking-layout">
+    <div class="booking-info reveal">
+      <div class="booking-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">連接錢包</div>
+          <div class="step-desc">使用 MetaMask 或 WalletConnect 連接，支援 Ethereum、Polygon、Arbitrum。</div>
+        </div>
       </div>
-      <div class="field">
-        <label>電話 / WhatsApp *</label>
-        <input type="tel" placeholder="+886 或 其他 or international" required>
+      <div class="booking-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">選擇房型與日期</div>
+          <div class="step-desc">選定房型、入住天數，智能合約自動計算總價（含鏈上折扣）。</div>
+        </div>
       </div>
-      <div class="field">
-        <label>Email *</label>
-        <input type="email" placeholder="your@email.com" required>
+      <div class="booking-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">簽署並送出</div>
+          <div class="step-desc">錢包簽署訂房合約，支付加密貨幣。訂單即時寫入鏈上，不可篡改。</div>
+        </div>
       </div>
-      <div class="field">
-        <label>LINE ID</label>
-        <input type="text" placeholder="選填 Optional">
+      <div class="booking-step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">獲得 NFT 憑證</div>
+          <div class="step-desc">訂房完成後自動鑄造住宿 NFT，作為入住憑證與未來會員權益。</div>
+        </div>
       </div>
     </div>
 
-    <div class="form-divider"></div>
-
-    <div class="form-grid three" style="margin-top: 20px;">
-      <div class="field">
-        <label>入住 Check-in *</label>
-        <input type="date" required>
-      </div>
-      <div class="field">
-        <label>退房 Check-out *</label>
-        <input type="date" required>
-      </div>
-      <div class="field">
-        <label>房型 Room Type *</label>
-        <select required>
-          <option value="">請選擇 Select</option>
-          <option>標準家庭房 Family Room (4人)</option>
-          <option>雙人房 Double Room (2人)</option>
-          <option>山景套房 Mountain Suite (2-3人)</option>
+    <div class="booking-card reveal">
+      <h3>⬡ 智能合約訂房</h3>
+      <div class="sc-field">
+        <label>房型 Room Type</label>
+        <select id="scRoom">
+          <option value="family">標準家庭房 — 0.028 ETH / 晚</option>
+          <option value="double">雙人房 — 0.018 ETH / 晚</option>
+          <option value="suite">山景套房 — 0.036 ETH / 晚</option>
         </select>
       </div>
-      <div class="field">
-        <label>大人 Adults</label>
-        <select>
-          <option>1</option><option selected>2</option>
-          <option>3</option><option>4</option>
-        </select>
+      <div class="sc-field">
+        <label>入住 Check-in</label>
+        <input type="date" id="scCheckin">
       </div>
-      <div class="field">
-        <label>小孩 Children</label>
-        <select>
-          <option selected>0</option><option>1</option>
-          <option>2</option><option>3</option>
-        </select>
+      <div class="sc-field">
+        <label>退房 Check-out</label>
+        <input type="date" id="scCheckout">
       </div>
-      <div class="field">
-        <label>寵物 Pets</label>
-        <select>
-          <option selected>無 None</option>
-          <option>小型犬貓 Small</option>
-          <option>中大型 Large</option>
-        </select>
+      <div class="sc-summary" id="scSummary">
+        <strong>摘要</strong><br>
+        房型：<span id="sumRoom">標準家庭房</span><br>
+        晚數：<span id="sumNights">1</span> 晚<br>
+        總價：<span id="sumTotal">0.028 ETH</span><br>
+        <span style="color:var(--web4)">+ 鑄造 NFT 憑證 (免費)</span>
       </div>
-    </div>
-
-    <div class="form-grid" style="margin-top: 20px;">
-      <div class="field form-full">
-        <label>特殊需求 Special Requests</label>
-        <textarea placeholder="例如：早餐偏好、接送需求、過敏資訊等 / E.g. breakfast preferences, airport transfer, allergies..."></textarea>
-      </div>
-    </div>
-
-    <div class="submit-row" style="margin-top: 24px;">
-      <button type="submit" class="btn-primary" style="font-size: 1rem; padding: 18px 40px;">
-        送出訂房申請 · Send Booking Request
+      <button class="btn-web4" id="scBookBtn" style="width:100%;justify-content:center;padding:16px;" onclick="executeBooking()">
+        ⬡ 連接錢包並簽署合約
       </button>
-      <div class="guarantee">
-        <strong>付款說明：</strong>收到申請後我們將提供<br>
-        信用卡付款連結（綠界 ECPay）
+    </div>
+  </div>
+</section>
+
+<!-- NFT MEMBERSHIP -->
+<section class="nft-section">
+  <div class="section-label web4">🖼️ NFT 會員 · Membership</div>
+  <h2 class="section-title reveal">住宿即會員，權益上鏈</h2>
+
+  <div class="nft-grid">
+    <div class="nft-card reveal">
+      <div class="nft-art">🌙</div>
+      <div class="nft-info">
+        <div class="nft-name">大潭 · 初夜</div>
+        <div class="nft-desc">首次住宿紀念 NFT，享下次 9 折。</div>
       </div>
     </div>
-  </form>
+    <div class="nft-card reveal">
+      <div class="nft-art">🏔️</div>
+      <div class="nft-info">
+        <div class="nft-name">大潭 · 山居</div>
+        <div class="nft-desc">住滿 3 晚解鎖，終身 85 折。</div>
+      </div>
+    </div>
+    <div class="nft-card reveal">
+      <div class="nft-art">⬡</div>
+      <div class="nft-info">
+        <div class="nft-name">Web4 創世會員</div>
+        <div class="nft-desc">第一批鏈上住客專屬，DAO 創始治理權。</div>
+      </div>
+    </div>
+    <div class="nft-card reveal">
+      <div class="nft-art">🌊</div>
+      <div class="nft-info">
+        <div class="nft-name">南灣 · 四季</div>
+        <div class="nft-desc">年度住宿 Pass，一年內不限次數 8 折。</div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- REVIEWS -->
 <section class="reviews">
   <div class="section-label">住客評語 · Guest Reviews</div>
-  <h2 class="section-title reveal">166 則真實評語</h2>
+  <h2 class="section-title reveal">鏈上驗證的真實評價</h2>
 
-  <div class="reviews-grid" style="margin-top: 48px;">
+  <div class="reviews-grid">
     <div class="review-card reveal">
       <div class="review-stars">★★★★★</div>
-      <p class="review-text">「CP值超高，老闆娘熱情招呼，停車方便，冷氣很涼，室內戲水池不會曬太陽，非常棒。下次來恆春還是會優先考慮。」</p>
-      <div class="review-author"><strong>家庭旅客</strong> · 標準家庭房 · 2025年8月</div>
+      <p class="review-text">「CP值超高，老闆娘熱情招呼，停車方便，冷氣很涼，室內戲水池不會曬太陽。鏈上訂房體驗很新奇！」</p>
+      <div class="review-author"><strong>家庭旅客</strong> · 標準家庭房 · 🖼️ NFT #042</div>
     </div>
     <div class="review-card reveal">
       <div class="review-stars">★★★★☆</div>
-      <p class="review-text">「CP值高。一樓有貓咪很可愛，電視功能齊全，冷氣涼，冰箱夠用。整體住宿體驗舒適，位置也不錯。」</p>
-      <div class="review-author"><strong>情侶旅客</strong> · 雙人房 · 2025年8月</div>
+      <p class="review-text">「一樓有貓咪很可愛，用 ETH 付款超順。整體住宿體驗舒適，位置也不錯。」</p>
+      <div class="review-author"><strong>鏈上住客</strong> · 雙人房 · 🖼️ NFT #089</div>
     </div>
     <div class="review-card reveal">
       <div class="review-stars">★★★★★</div>
-      <p class="review-text">"Great value, friendly host, clean rooms. The indoor pool is a lovely bonus. Close enough to South Bay and Kenting. Will definitely return!"</p>
-      <div class="review-author"><strong>International Guest</strong> · Family Room · 2025</div>
+      <p class="review-text">"Great value, friendly host, clean rooms. Paid with crypto — seamless. The indoor pool is a lovely bonus."</p>
+      <div class="review-author"><strong>Web3 Traveler</strong> · Family Room · 🖼️ NFT #013</div>
     </div>
   </div>
 </section>
@@ -786,52 +1063,184 @@ footer {
   </div>
 </section>
 
+<!-- QR CODE -->
+<section class="qr-section" style="background:var(--deep);padding:60px 6vw;text-align:center;">
+  <div class="section-label web4">⬡ 實體節點 · Physical Node</div>
+  <h2 class="section-title" style="color:var(--sand);">掃碼進入 DataNinn</h2>
+  <p style="color:rgba(245,237,224,.45);margin-top:12px;font-size:.85rem;">Web4 實體協議節點 · V18 系統運算中心</p>
+  <div style="margin:32px auto 0;display:inline-block;background:#fff;border-radius:12px;padding:16px;">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://linke-cmd.github.io/dataninn/" alt="DataNinn QR Code" style="display:block;width:250px;height:250px;">
+  </div>
+  <div style="margin-top:20px;">
+    <a href="https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=https://linke-cmd.github.io/dataninn/" download="dataninn-qr.png" class="btn-outline" style="border-color:var(--web4);color:var(--web4);">⬇ 下載 QR Code (印出來貼)</a>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div>
-    <div class="footer-brand">大潭山莊 <span>·</span> Da Tan</div>
-    <div class="footer-copy" style="margin-top: 8px;">© 2026 大潭山莊 Da Tan Mountain INN</div>
+    <div class="footer-brand">大潭山莊 <span>·</span> Da Tan <span class="web4-mark">⬡ WEB4</span></div>
+    <div class="footer-copy" style="margin-top: 8px;">© 2026 大潭山莊 · Powered by Web4 Protocol</div>
   </div>
   <div class="footer-info">
     📍 屏東縣恆春鎮南灣路新生巷 61 號<br>
     📞 <a href="tel:+886983571139">0983-571-139</a><br>
     💬 LINE：<a href="https://line.me/R/ti/p/0983571139">@0983571139</a><br>
     ✉️ <a href="mailto:linke1000@hotmail.com">linke1000@hotmail.com</a><br>
-    <a href="#" id="shareLine" style="font-size:.82rem;color:var(--gold);text-decoration:none;">📤 分享到 LINE</a>
+    ⬡ <a href="#" onclick="if(window.ethereum)connectWallet();else alert('請安裝 MetaMask');return false" style="color:var(--web4);">連接錢包</a>
+    · <a href="#" id="shareLine" style="color:var(--gold);">📤 分享</a>
   </div>
 </footer>
 
 <script>
-// Scroll reveal
+// ── CONFIG ──
+const CONFIG = {
+  contractAddress: '0x...', // ← 部署智能合約後填入
+  chainId: 137, // Polygon mainnet
+  ethPrice: 63500, // 1 ETH ≈ NT$63,500 (示意)
+};
+
+// ── SCROLL REVEAL ──
 const observer = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.12 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// ECPay 付款頁 URL（申請後替換）
-const ECPAY_URL = 'https://pay.ecpay.com.tw/...'; // ← 申請後替換此網址
+// ── WALLET ──
+let signer, provider, userAddress;
 
-// Form submit → 導到付款頁
-document.getElementById('bookingForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const btn = this.querySelector('button[type=submit]');
-  btn.textContent = '⏳ 導向付款頁面... Redirecting to payment';
-  btn.style.background = '#4a5c3e';
-  btn.disabled = true;
-  // 收集表單參數可在此處序列化後附加至 URL
-  window.location.href = ECPAY_URL;
-});
+const walletBtn = document.getElementById('walletBtn');
+const walletAddr = document.getElementById('walletAddr');
+const networkTag = document.getElementById('networkTag');
 
-// 分享到 LINE（自動抓目前網址）
+async function connectWallet() {
+  if (!window.ethereum) return alert('請安裝 MetaMask 錢包\nPlease install MetaMask');
+  try {
+    provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
+    signer = provider.getSigner();
+    userAddress = await signer.getAddress();
+    const net = await provider.getNetwork();
+    walletAddr.textContent = userAddress.slice(0,6) + '...' + userAddress.slice(-4);
+    walletBtn.textContent = '⬡ 已連接';
+    walletBtn.classList.add('connected');
+    networkTag.textContent = '● ' + (net.name === 'matic' ? 'Polygon' : net.name);
+    document.getElementById('scBookBtn').textContent = '⬡ 簽署合約 · 完成訂房';
+    return true;
+  } catch(e) {
+    console.error(e);
+    return false;
+  }
+}
+
+walletBtn.addEventListener('click', connectWallet);
+
+// ── AI CHAT ──
+const chatMsgs = document.getElementById('chatMsgs');
+const chatInput = document.getElementById('chatInput');
+
+const aiResponses = {
+  '價格': '目前房價：雙人房 0.018 ETH（≈NT$1,180）、家庭房 0.028 ETH（≈NT$1,780）、山景套房 0.036 ETH（≈NT$2,280）。使用 ETH 付款享 5% 鏈上折扣！',
+  '家庭房': '標準家庭房 NT$1,780/晚（≈0.028 ETH），可住 4 人，含私人衛浴、園景陽台。用加密貨幣預訂可以省平台費！',
+  '雙人房': '雙人房 NT$1,180/晚（≈0.018 ETH），適合 2 人，舒適雙人床、強力冷氣。',
+  '套房': '山景套房 NT$2,280/晚（≈0.036 ETH），獨立陽台、山景、客廳區，適合 2-3 人長住。',
+  '寵物': '可以的！我們歡迎寵物入住，請在預訂時備註寵物類型。不另收費 🐾',
+  '早餐': '住宿含免費早餐，每日 08:00-09:30 供應在地特色早餐。',
+  '泳池': '我們有室內游泳池，全年開放，住宿房客免費使用。',
+  '墾丁': '距離墾丁大街約 10 分鐘車程，南灣海灘 5 分鐘。',
+  '折扣': '使用加密貨幣（ETH/USDC）付款享 5% 折扣！持有大潭 NFT 再享額外折扣。',
+  'nft': '每次鏈上訂房會自動鑄造住宿 NFT，累積住宿次數可解鎖更高會員等級，最高終身 85 折。',
+};
+
+function sendChat() {
+  const text = chatInput.value.trim();
+  if (!text) return;
+  addMsg(text, 'user');
+  chatInput.value = '';
+  setTimeout(() => {
+    let reply = '感謝您的訊息！我可以幫您查詢房價、空房、或是直接進行鏈上訂房。請問您想住哪一種房型？';
+    for (const [key, val] of Object.entries(aiResponses)) {
+      if (text.includes(key)) { reply = val; break; }
+    }
+    addMsg(reply, 'bot');
+  }, 500 + Math.random() * 600);
+}
+
+function addMsg(text, type) {
+  const div = document.createElement('div');
+  div.className = 'ai-msg ' + type;
+  div.textContent = text;
+  chatMsgs.appendChild(div);
+  chatMsgs.scrollTop = chatMsgs.scrollHeight;
+}
+
+// ── SMART CONTRACT BOOKING ──
+function updateSummary() {
+  const roomOpt = document.getElementById('scRoom');
+  const checkin = document.getElementById('scCheckin').value;
+  const checkout = document.getElementById('scCheckout').value;
+  const prices = { family: 0.028, double: 0.018, suite: 0.036 };
+  const names = { family: '標準家庭房', double: '雙人房', suite: '山景套房' };
+  const val = roomOpt.value;
+  document.getElementById('sumRoom').textContent = names[val];
+  if (checkin && checkout) {
+    const days = Math.max(1, (new Date(checkout) - new Date(checkin)) / 86400000);
+    document.getElementById('sumNights').textContent = days;
+    document.getElementById('sumTotal').textContent = (prices[val] * days).toFixed(3) + ' ETH';
+  }
+}
+
+document.getElementById('scRoom').addEventListener('change', updateSummary);
+document.getElementById('scCheckin').addEventListener('change', updateSummary);
+document.getElementById('scCheckout').addEventListener('change', updateSummary);
+
+async function executeBooking() {
+  if (!window.ethereum) return alert('請先安裝 MetaMask');
+  const connected = await connectWallet();
+  if (!connected) return;
+
+  const roomOpt = document.getElementById('scRoom');
+  const checkin = document.getElementById('scCheckin').value;
+  const checkout = document.getElementById('scCheckout').value;
+  if (!checkin || !checkout) return alert('請選擇入住和退房日期');
+
+  const prices = { family: '0.028', double: '0.018', suite: '0.036' };
+  const days = Math.max(1, (new Date(checkout) - new Date(checkin)) / 86400000);
+  const totalEth = (parseFloat(prices[roomOpt.value]) * days).toFixed(4);
+
+  try {
+    // 模擬交易 — 正式上線時替換為合約呼叫
+    alert(`🔄 正在送出交易...\n\n房型：${roomOpt.options[roomOpt.selectedIndex].text}\n金額：${totalEth} ETH\n\n⚠️ 演示模式：正式部署後將呼叫智能合約`);
+    // 實際合約呼叫範例（註解）：
+    // const contract = new ethers.Contract(CONFIG.contractAddress, ABI, signer);
+    // const tx = await contract.book(checkin, checkout, roomOpt.value, { value: ethers.utils.parseEther(totalEth) });
+    // await tx.wait();
+    // alert('✅ 訂房成功！NFT 憑證已鑄造');
+  } catch(e) {
+    alert('交易失敗：' + e.message);
+  }
+}
+
+// ── CRYPTO BOOK FROM ROOM CARDS ──
+async function bookWithCrypto(roomName, ethAmount) {
+  if (!window.ethereum) return alert('請先安裝 MetaMask');
+  const connected = await connectWallet();
+  if (!connected) return;
+  alert(`🔄 準備預訂 ${roomName}\n金額：${ethAmount} ETH\n\n請到上方「智能合約訂房」區塊完成訂單。`);
+  document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── SHARE LINE ──
 document.getElementById('shareLine')?.addEventListener('click', function(e) {
   e.preventDefault();
-  const msg = encodeURIComponent('大潭山莊 Da Tan Mountain INN\n' + window.location.href);
+  const msg = encodeURIComponent('大潭山莊 Da Tan Mountain INN · Web4 去中心化旅宿智能體\n' + window.location.href);
   window.open('https://line.me/R/msg/text/?' + msg, '_blank');
 });
 
-// Set min date to today
+// ── SET MIN DATE ──
 const today = new Date().toISOString().split('T')[0];
-document.querySelectorAll('input[type=date]').forEach(i => i.min = today);
+document.querySelectorAll('input[type=date]').forEach(i => { i.min = today; if (!i.value) i.value = today; });
+updateSummary();
 </script>
 </body>
 </html>

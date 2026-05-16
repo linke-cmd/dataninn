@@ -782,7 +782,7 @@ footer {
           <span class="tag-web4 tag">⬡ 可加密支付</span>
         </div>
         <div class="room-price">
-          <div class="price-num">NT$1,780</div>
+          <div class="price-num">NT$2,200</div>
           <div class="price-unit">/ 晚起</div>
           <span class="price-eth">≈ 0.028 ETH</span>
           <div class="price-save">直訂省 20%</div>
@@ -808,7 +808,7 @@ footer {
           <span class="tag-web4 tag">⬡ 可加密支付</span>
         </div>
         <div class="room-price">
-          <div class="price-num">NT$1,180</div>
+          <div class="price-num">NT$1,600</div>
           <div class="price-unit">/ 晚起</div>
           <span class="price-eth">≈ 0.018 ETH</span>
           <div class="price-save">直訂省 20%</div>
@@ -834,7 +834,7 @@ footer {
           <span class="tag-web4 tag">⬡ 可加密支付</span>
         </div>
         <div class="room-price">
-          <div class="price-num">NT$2,280</div>
+          <div class="price-num">NT$2,800</div>
           <div class="price-unit">/ 晚起</div>
           <span class="price-eth">≈ 0.036 ETH</span>
           <div class="price-save">直訂省 20%</div>
@@ -930,11 +930,25 @@ footer {
     <div class="booking-card reveal">
       <h3>⬡ 智能合約訂房</h3>
       <div class="sc-field">
+        <label>姓名 Name *</label>
+        <input type="text" id="scName" placeholder="您的姓名 Your name">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="sc-field">
+          <label>Email *</label>
+          <input type="email" id="scEmail" placeholder="your@email.com">
+        </div>
+        <div class="sc-field">
+          <label>電話 Phone *</label>
+          <input type="tel" id="scPhone" placeholder="+886...">
+        </div>
+      </div>
+      <div class="sc-field">
         <label>房型 Room Type</label>
         <select id="scRoom">
-          <option value="family">標準家庭房 — 0.028 ETH / 晚</option>
-          <option value="double">雙人房 — 0.018 ETH / 晚</option>
-          <option value="suite">山景套房 — 0.036 ETH / 晚</option>
+          <option value="family">標準家庭房 — NT$2,200 / 晚</option>
+          <option value="double">雙人房 — NT$1,600 / 晚</option>
+          <option value="suite">山景套房 — NT$2,800 / 晚</option>
         </select>
       </div>
       <div class="sc-field">
@@ -949,12 +963,17 @@ footer {
         <strong>摘要</strong><br>
         房型：<span id="sumRoom">標準家庭房</span><br>
         晚數：<span id="sumNights">1</span> 晚<br>
-        總價：<span id="sumTotal">0.028 ETH</span><br>
-        <span style="color:var(--web4)">+ 鑄造 NFT 憑證 (免費)</span>
+        總價：NT$<span id="sumNtd">2,200</span><br>
+        <span style="color:var(--web4)">🔗 加密支付 ∮ 0.028 ETH</span>
       </div>
-      <button class="btn-web4" id="scBookBtn" style="width:100%;justify-content:center;padding:16px;" onclick="executeBooking()">
-        ⬡ 連接錢包並簽署合約
-      </button>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button class="btn-web4" id="ecpayBtn" style="width:100%;justify-content:center;padding:14px;" onclick="ecpayCheckout()">
+          💳 信用卡付款 (綠界)
+        </button>
+        <button class="btn-outline" id="scBookBtn" style="width:100%;justify-content:center;padding:12px;border-color:var(--web4);color:var(--web4);" onclick="executeBooking()">
+          ⬡ 加密貨幣支付 (MetaMask)
+        </button>
+      </div>
     </div>
   </div>
 </section>
@@ -1239,10 +1258,10 @@ const chatMsgs = document.getElementById('chatMsgs');
 const chatInput = document.getElementById('chatInput');
 
 const aiResponses = {
-  '價格': '目前房價：雙人房 0.018 ETH（≈NT$1,180）、家庭房 0.028 ETH（≈NT$1,780）、山景套房 0.036 ETH（≈NT$2,280）。使用 ETH 付款享 5% 鏈上折扣！',
-  '家庭房': '標準家庭房 NT$1,780/晚（≈0.028 ETH），可住 4 人，含私人衛浴、園景陽台。用加密貨幣預訂可以省平台費！',
-  '雙人房': '雙人房 NT$1,180/晚（≈0.018 ETH），適合 2 人，舒適雙人床、強力冷氣。',
-  '套房': '山景套房 NT$2,280/晚（≈0.036 ETH），獨立陽台、山景、客廳區，適合 2-3 人長住。',
+  '價格': '目前房價：雙人房 0.018 ETH（≈NT$1,600）、家庭房 0.028 ETH（≈NT$2,200）、山景套房 0.036 ETH（≈NT$2,800）。使用 ETH 付款享 5% 鏈上折扣！',
+  '家庭房': '標準家庭房 NT$2,200/晚（≈0.028 ETH），可住 4 人，含私人衛浴、園景陽台。用加密貨幣預訂可以省平台費！',
+  '雙人房': '雙人房 NT$1,600/晚（≈0.018 ETH），適合 2 人，舒適雙人床、強力冷氣。',
+  '套房': '山景套房 NT$2,800/晚（≈0.036 ETH），獨立陽台、山景、客廳區，適合 2-3 人長住。',
   '寵物': '可以的！我們歡迎寵物入住，請在預訂時備註寵物類型。不另收費 🐾',
   '早餐': '住宿含免費早餐，每日 08:00-09:30 供應在地特色早餐。',
   '泳池': '我們有室內游泳池，全年開放，住宿房客免費使用。',
@@ -1278,14 +1297,14 @@ function updateSummary() {
   const roomOpt = document.getElementById('scRoom');
   const checkin = document.getElementById('scCheckin').value;
   const checkout = document.getElementById('scCheckout').value;
-  const prices = { family: 0.028, double: 0.018, suite: 0.036 };
+  const prices = { family: [2200, 0.028], double: [1600, 0.018], suite: [2800, 0.036] };
   const names = { family: '標準家庭房', double: '雙人房', suite: '山景套房' };
   const val = roomOpt.value;
   document.getElementById('sumRoom').textContent = names[val];
   if (checkin && checkout) {
     const days = Math.max(1, (new Date(checkout) - new Date(checkin)) / 86400000);
     document.getElementById('sumNights').textContent = days;
-    document.getElementById('sumTotal').textContent = (prices[val] * days).toFixed(3) + ' ETH';
+    document.getElementById('sumNtd').textContent = (prices[val][0] * days).toLocaleString();
   }
 }
 
@@ -1293,6 +1312,56 @@ document.getElementById('scRoom').addEventListener('change', updateSummary);
 document.getElementById('scCheckin').addEventListener('change', updateSummary);
 document.getElementById('scCheckout').addEventListener('change', updateSummary);
 
+// ── ECPay 信用卡付款 ──
+async function ecpayCheckout() {
+  const name = document.getElementById('scName').value.trim();
+  const email = document.getElementById('scEmail').value.trim();
+  const phone = document.getElementById('scPhone').value.trim();
+  const checkin = document.getElementById('scCheckin').value;
+  const checkout = document.getElementById('scCheckout').value;
+  const roomOpt = document.getElementById('scRoom');
+  if (!name || !email || !phone) return alert('請填寫姓名、Email 和電話');
+  if (!checkin || !checkout) return alert('請選擇入住和退房日期');
+
+  const prices = { family: [2200, '標準家庭房'], double: [1600, '雙人房'], suite: [2800, '山景套房'] };
+  const days = Math.max(1, (new Date(checkout) - new Date(checkin)) / 86400000);
+
+  const btn = document.getElementById('ecpayBtn');
+  btn.textContent = '⏳ 導向付款...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(V18_API + '/ecpay/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        room: roomOpt.value,
+        checkin, checkout,
+        name, email, phone,
+      }),
+    });
+    const data = await res.json();
+    // 建立隱藏表單 POST 到綠界
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = data.action_url;
+    form.target = '_blank';
+    for (const [k, v] of Object.entries(data.params)) {
+      const inp = document.createElement('input');
+      inp.type = 'hidden'; inp.name = k; inp.value = v;
+      form.appendChild(inp);
+    }
+    document.body.appendChild(form);
+    form.submit();
+    btn.textContent = '✅ 已導向綠界付款頁';
+  } catch (e) {
+    alert('付款伺服器連線失敗，請確認 VPS API 是否在運行。\n' + e.message);
+    btn.textContent = '💳 信用卡付款 (綠界)';
+    btn.disabled = false;
+  }
+}
+
+// ── CRYPTO BOOK ──
 async function executeBooking() {
   if (!window.ethereum) return alert('請先安裝 MetaMask');
   const connected = await connectWallet();
@@ -1306,18 +1375,7 @@ async function executeBooking() {
   const prices = { family: '0.028', double: '0.018', suite: '0.036' };
   const days = Math.max(1, (new Date(checkout) - new Date(checkin)) / 86400000);
   const totalEth = (parseFloat(prices[roomOpt.value]) * days).toFixed(4);
-
-  try {
-    // 模擬交易 — 正式上線時替換為合約呼叫
-    alert(`🔄 正在送出交易...\n\n房型：${roomOpt.options[roomOpt.selectedIndex].text}\n金額：${totalEth} ETH\n\n⚠️ 演示模式：正式部署後將呼叫智能合約`);
-    // 實際合約呼叫範例（註解）：
-    // const contract = new ethers.Contract(CONFIG.contractAddress, ABI, signer);
-    // const tx = await contract.book(checkin, checkout, roomOpt.value, { value: ethers.utils.parseEther(totalEth) });
-    // await tx.wait();
-    // alert('✅ 訂房成功！NFT 憑證已鑄造');
-  } catch(e) {
-    alert('交易失敗：' + e.message);
-  }
+  alert(`🔄 演示模式\n\n房型：${roomOpt.options[roomOpt.selectedIndex].text}\n金額：${totalEth} ETH\n\n智能合約部署後將自動簽署鏈上交易`);
 }
 
 // ── CRYPTO BOOK FROM ROOM CARDS ──
@@ -1325,7 +1383,7 @@ async function bookWithCrypto(roomName, ethAmount) {
   if (!window.ethereum) return alert('請先安裝 MetaMask');
   const connected = await connectWallet();
   if (!connected) return;
-  alert(`🔄 準備預訂 ${roomName}\n金額：${ethAmount} ETH\n\n請到上方「智能合約訂房」區塊完成訂單。`);
+  alert(`🔄 準備預訂 ${roomName}\n金額：${ethAmount} ETH\n\n請填寫上方資料後選擇信用卡或加密貨幣付款。`);
   document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
 }
 
